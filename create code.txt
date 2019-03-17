@@ -1,0 +1,338 @@
+﻿#include <kipr/botball.h>
+
+
+int main()
+{
+        // wait_for_light(0);
+        //shut_down_in(120);
+        //printf("timer set");
+
+
+        enable_servos();
+        create_connect();
+        printf("create connected");
+
+
+
+
+
+
+        //go forward until middle black line//////////////////////////////////////////////////////////////
+        create_drive_direct(80, 80);
+        msleep(8000);
+        while(analog(0) < 3000)
+        {
+            if(analog(0) > 3000)
+            {
+                ao();
+                printf("saw the line");
+                break;
+
+
+            }
+        }
+
+
+        //move backward//////////////////////////////////////////////////////////////////////////////////
+        create_drive_direct(-50, -50);
+        msleep(3500);
+        ao();
+
+
+        //turn right///////////////////////////////////////////////////////////////////////////////////
+
+
+        create_drive_direct(50, -50);
+        msleep(3470);
+        ao();
+        //line follow until lined up to gas line/////////////////////////////////////////////////////
+
+
+        create_drive_direct(80, 85);
+        msleep(7500);
+        ao();
+
+
+        //turn left until camera sees orange gas pipe (put existing code here)/////////////////////////
+
+
+
+
+        //declare integer as object found
+        int objectFound = 0;
+
+
+        //declare color channel
+        int myColorChannel = 0; //0 = orange   1 =         2 =        3 =         ///////////////////////
+
+
+
+
+
+
+        //report that the program has started
+        printf(" Camera Program has started. \n");
+        msleep(2000);
+
+
+        //turn camera on
+        camera_open_black();
+
+
+        //load configuration for camera
+        if (camera_load_config("dining room"))
+        {
+            printf("camera_load_config(); succeeded!");
+        }
+
+
+
+
+
+
+        //spin the robot in a circle
+        create_drive_direct(-50, 50);
+
+
+        //loop until object is found
+        while (objectFound == 0)
+        {
+            //update camera
+            camera_update();
+
+
+
+
+            //get information from the camera
+            //test to see if objects are found
+            if (get_object_count(myColorChannel) > 0)
+            {
+                printf("Object has been found");
+                msleep(500);
+                ao();
+                objectFound = (objectFound + 1);
+                //stop program because objects were found
+
+
+            }
+        }
+        //report back how many objects and where they are on the screen
+        printf("Number of objects found = %d \n", get_object_count(0));
+
+
+        printf("object x column = %d \n",get_object_center_x(myColorChannel, 0));
+        printf("object y row = %d \n", get_object_center_y(myColorChannel, 0));
+
+
+        //print object area
+        printf("object area = %d \n", get_object_area(myColorChannel, 0));
+
+
+
+
+        //go forward until bumped///////////////////////////////////////////////////////////////////////
+        while(get_create_rbump() == 0)
+        {
+            create_drive_direct(75, 75);
+        }
+        create_stop();
+
+
+        //move backward until black line sensed////////////////////////////////////////////////////////////////////////////
+        create_drive_direct(-50, -50);
+        while(analog(0) < 3500)
+        {
+            if((analog(0) > 250) && (analog(0) < 350))
+            {
+                ao();
+                printf("saw the line");
+                break;
+
+
+            }
+        }
+
+
+
+
+        //set servo position to safe
+        set_servo_position(1, 1500);
+
+
+
+
+
+
+        //move forward
+        create_drive_direct(50, 50);
+        msleep(600);
+
+
+        //turn right
+        create_drive_direct(50, -50);
+        msleep(3700);
+        create_drive_direct(0, 0);
+
+
+        //drive until bumped
+        create_drive_direct(50, 50);
+        while(get_create_lbump() == 0);
+        {
+            create_drive_direct(75, 75);
+
+
+        }
+
+
+        //move backward
+        create_drive_direct(-50, -50);
+        msleep(1840);
+        create_stop();
+
+
+
+
+        //pick up the gas pipe///////////////////////////////////////////////////////////////////////////////////
+        set_servo_position(3, 216);
+        set_servo_position(1, 1327);
+        msleep(500);
+        set_servo_position(1, 1558);
+        msleep(500);
+        set_servo_position(1, 1779);
+        msleep(500);
+        set_servo_position(0, 330);
+
+
+        msleep(3000);
+
+
+        set_servo_position(3, 1340);
+        msleep(500);
+        set_servo_position(1, 1750);
+        msleep(300);
+        set_servo_position(1, 1700);
+        msleep(100);
+        set_servo_position(1, 1650);
+        msleep(300);
+        set_servo_position(1, 1600);
+        msleep(100);
+        set_servo_position(1, 1550);
+        msleep(300);
+        set_servo_position(1, 1500);
+        msleep(100);
+        set_servo_position(1, 1133);
+        msleep(2000);
+
+
+        //move backward////
+        create_drive_direct(-50, -50);
+        msleep(2500);
+
+
+
+
+
+
+        //turn right//////////
+        create_drive_direct(50, -50);
+        msleep(3240);
+        create_stop();
+
+
+        while(get_create_lbump() == 0)
+        {
+            create_drive_direct(75, 75);
+        }
+
+
+//move backward///////////////////////////////////
+        create_drive_direct(-50, -50);
+        msleep(1750);
+    
+        //turn ///////////////////////
+        create_drive_direct(50, -50);
+        msleep(3240);
+
+
+        //move backward until bumped///////////////////////////////////
+        while(digital(0) == 0)
+        {
+            create_drive_direct(-50, -50);
+        }
+        create_stop();
+
+
+        //put gas pipe on "T"//////////////////////////////////////////////////////////////////
+        msleep(1000);
+        set_servo_position(2, 966);
+        msleep(1000);
+        set_servo_position(1, 1500);
+        msleep(100);
+        set_servo_position(1, 1510);
+        msleep(100);
+        set_servo_position(1, 1520);
+        msleep(100);
+        set_servo_position(1,1530);
+        msleep(100);
+        set_servo_position(1, 1540);
+        msleep(100);
+        set_servo_position(1, 1550);
+        msleep(100);
+        set_servo_position(1, 1564);
+        msleep(1000);
+        set_servo_position(0, 300);
+        msleep(100);
+        set_servo_position(0, 290);
+        msleep(100);
+        set_servo_position(0, 280);
+        msleep(100);
+        set_servo_position(0, 250);
+        msleep(100);
+        set_servo_position(0, 210);
+        msleep(100);
+        set_servo_position(0, 200);
+        msleep(100);
+        set_servo_position(0, 180);
+        msleep(100);
+        set_servo_position(0, 150);
+        msleep(100);
+        set_servo_position(0, 130);
+        msleep(100);
+        set_servo_position(0, 100);
+        msleep(100);
+        set_servo_position(0, 80);
+        msleep(100);
+        set_servo_position(0, 50);
+        msleep(100);
+        set_servo_position(0, 30);
+        msleep(100);
+        set_servo_position(0, 10);
+        msleep(100);
+        set_servo_position(0, 0);
+        msleep(3000);
+
+
+
+
+        create_drive_direct(50, 50);
+        msleep(2000);
+
+
+        set_servo_position(3, 600);
+        msleep(500);
+        set_servo_position(1, 1723);
+        msleep(1000);
+
+
+        while(digital(0) == 0)
+        {
+            create_drive_direct(-50, -50);
+        }
+        create_stop();
+
+
+
+
+        create_disconnect();
+        return 0;
+}
